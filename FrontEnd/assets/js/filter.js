@@ -18,6 +18,7 @@ let variablestockage;
 let filterlist;
 let projetData;
 let data;
+let urlimg;
 let gallery=document.getElementById("gallery");
 let addproject=document.getElementById("addproject");
 let containermodal=document.getElementById("containermodal");
@@ -33,6 +34,7 @@ let category=document.getElementById("category");
 let submitButton=document.getElementById("modalsubmit");
 let removeWhenUpload=document.getElementsByClassName("remove");
 function pagelaunch(){
+	filter("tous")
 	if (loged == "true") {
 		logout.style.display="block"
 		login.style.display="none"
@@ -175,13 +177,14 @@ category.addEventListener("change",function(){verifFormCompleted()},false)
 projectImg.addEventListener("change",function(){verifFormCompleted()},false)
 title.addEventListener("change",function(){verifFormCompleted()},false)
 submitButton.addEventListener('click',async event =>{
-    event.preventDefault;
+    event.preventDefault();
     projetData=new FormData(modalform);
     data = {
 		"title": title.value,
 		"imageUrl": preview.src,
-		"categoryId": category.value
-	  }
+		"category": category.value
+	}
+	console.log(data)
     await fetch('http://localhost:5678/api/works',{
         method:'post',
         headers:{
@@ -189,8 +192,14 @@ submitButton.addEventListener('click',async event =>{
         },
         body:JSON.stringify(data)
     })
-
-});
+	.then(response => response.json())
+	.then(data =>{
+	  console.log(data);
+	  modalgallery()
+	  filter("tous")
+	})
+	.catch(error => console.log("voici l'erreur",error))
+  })
 
 pagelaunch()
 modalgallery()
