@@ -15,16 +15,19 @@
 </head>
 <body>
 <header>
-	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
-	<nav>
-		<ul>
-			<li>projets</li>
-			<li>contact</li>
-			<li id="login"><a href="../FrontEnd/assets/pages/login.html">login</a></li>
-			<li id="logout">logout</li>
-			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
-		</ul>
-	</nav>
+	<div id="banner-edit"><i class="fa-regular fa-pen-to-square"></i><p>Mode édition</p></div>
+	<div id="menu">
+		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+		<nav>
+			<ul>
+				<li>projets</li>
+				<li>contact</li>
+				<li id="login"><a href="../FrontEnd/assets/pages/login.html">login</a></li>
+				<li id="logout">logout</li>
+				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+			</ul>
+		</nav>
+	</div>
 </header>
 <main>
 	<section id="introduction">
@@ -58,15 +61,15 @@
 					<div class="containerFile">
 				  		<span class="remove"><i class="fa-5x fa-regular fa-image"></i></span>
 				  		<label class="remove" for="file">+Ajouter photo</label>
-				  		<input type="file" id="file" name="imageUrl">
+				  		<input type="file" id="file" accept="image/jpeg, image/png"  name="image">
 						<img id="preview" src="#" alt="Aperçut de l'image">
 						<p class="remove">jpg,png: 4 mo max</p>
 					</div>
 					<label for="title">Titre</label>
 					<input type="text" id="title" name="title">
 					<label for="category">Catégorie</label>
-					<select name="categoryId" id="category"></select>
-					<button id="modalsubmit" class="button" disabled>Valider</button>
+					<select name="category" id="category"></select>
+					<button id="modalsubmit" type="submit" class="button" disabled>Valider</button>
 			  	</form>
 			</div>
 		</div>
@@ -140,6 +143,6 @@
 		</ul>
 	</nav>
 </footer>
-<script src="../FrontEnd/assets/js/filter.js"></script>
+<script src="../FrontEnd/assets/js/index.js"></script>
 </body>
 </html>

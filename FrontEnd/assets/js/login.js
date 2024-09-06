@@ -23,6 +23,7 @@ loginform.addEventListener('submit',async event =>{
 	    console.log(data);
         if (data.token) {
             localStorage.setItem('token',data.token);
+            localStorage.setItem('userId',data.userId)
             window.sessionStorage.loged = true;
             window.location.href = "../../index.html";
         } 

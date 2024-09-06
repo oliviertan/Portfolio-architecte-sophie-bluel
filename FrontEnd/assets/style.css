@@ -55,6 +55,7 @@ body {
 }
 header {
 	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
 	margin: 50px 0
 }
@@ -218,11 +219,12 @@ footer nav ul {
 .containerModals {
 	display: none;
 	position: fixed;
-	top: 20%;
+	top: 35%;
 	justify-content: center;
 	align-items: center;
-	height: 700px;
+	height: 600px;
 	width: 50%;
+	max-width: 500px;
 	background-color: white;
 	border-radius: 10px;
   }
@@ -286,10 +288,6 @@ footer nav ul {
 .fa-trash-can{
 	color: white;
 }
-#modal .button{
-	bottom: 10px;
-	right: 35%;
-}
 
 #modal .button{
 	font-family: 'Syne';
@@ -298,6 +296,7 @@ footer nav ul {
     background-color: #1D6154;
     margin: 2em auto;
     width: 180px;
+	height: 45px;
     text-align: center;
     border-radius: 60px;
 }
@@ -370,6 +369,16 @@ footer nav ul {
     height: 100%;
     margin-top: -10px;
 }
+#banner-edit{
+	display: none;
+	justify-content: center;
+	align-items: center;
+	background-color: black;
+	color: white;
+	width: 100%;
+	height: 45px;
+	margin-bottom: 10px;
+}
 #edit{
 	display: none;
 	padding: 10px;
@@ -402,4 +411,9 @@ footer nav ul {
 }
 .modaltitle{
 	padding-top: 20px;
+}
+#menu{
+	display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
