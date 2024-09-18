@@ -6,7 +6,6 @@ let mail=document.getElementById("email");
 let password=document.getElementById("password");
 loginform.addEventListener('submit',async event =>{
     event.preventDefault();
-    loginData=new FormData(loginform);
     data = {
         "email":mail.value,
         "password":password.value

@@ -10,7 +10,9 @@ fetch("http://localhost:5678/api/works")
         })
 const categorylist=JSON.parse(localStorage.getItem('categorylist'));
 const workslist=JSON.parse(localStorage.getItem('workslist'));
-const delete_icon = document.getElementsByClassName("fa-trash-can");
+var stockage;
+var delete_icon = document.getElementsByClassName("fa-trash-can");
+var lastid=localStorage.getItem('lastid');
 const loged = window.sessionStorage.loged;
 const login=document.getElementById("login")
 const logout = document.getElementById("logout");
@@ -40,38 +42,85 @@ function displayfilter(){;
     button.addEventListener("click", function(){filter(button.getAttribute("id"));}, false);
     } 
 };
+function createWorkGallery(jsonId,jsonUrl,jsonTitle){
+	document.getElementById("gallery").innerHTML+=`<figure id="${jsonId}">
+																	<img src=${jsonUrl} alt=${jsonTitle}>
+																	<figcaption>${jsonTitle}</figcaption>
+													</figure>`;
+}
 
+function createWorkModal(jsonId,jsonUrl,jsonTitle){
+	document.getElementById("gallerymodal").innerHTML+=`<div id="${jsonId}"class=" modalimg">
+	<img src=${jsonUrl} alt=${jsonTitle}>
+	<span class="icon_delete"><i id=${jsonId} class=" fa-solid fa-trash-can"></i></span>
+   </div>`;
+}
 function filter(categoryid){
 	document.getElementById("gallery").innerHTML = '';
 	if(categoryid!="tous"){
 		for(let jsonworks of workslist){
 			if(categoryid==jsonworks.category.name || ((categoryid=="Hotels")&&(jsonworks.category.name=="Hotels & restaurants"))){
-				document.getElementById("gallery").innerHTML+=`<figure id=${jsonworks.id}>
-																	<img src=${jsonworks.imageUrl} alt=${jsonworks.title}>
-																	<figcaption>${jsonworks.title}</figcaption>
-															   </figure>`;
+				createWorkGallery(jsonworks.id,jsonworks.imageUrl,jsonworks.title)
 			}
 		}
 	}
 	else{
 		for(let jsonworks of workslist){
-			document.getElementById("gallery").innerHTML+=`<figure id=${jsonworks.id}>
-																	<img src=${jsonworks.imageUrl} alt=${jsonworks.title}>
-																	<figcaption>${jsonworks.title}</figcaption>
-															   </figure>`;
+			createWorkGallery(jsonworks.id,jsonworks.imageUrl,jsonworks.title)
 		}
 	}
 };
-
-function modalgallery(){
-  for(let jsonworks of workslist){
-    document.getElementById("gallerymodal").innerHTML+=`<div class="modalimg">
-                                <img src=${jsonworks.imageUrl} alt=${jsonworks.title}>
-                                <span class="icon_delete"><i id=${jsonworks.id} class="fa-solid fa-trash-can"></i></span>
-                               </div>`;
-  }
+function addiconListener(){
+	for(icon of delete_icon){
+		icon.addEventListener("click",async event=>{
+			event.preventDefault()
+			try{
+				const response=await fetch(`http://localhost:5678/api/works/${icon.id}`, {
+					method: "DELETE",
+					headers: {
+					  Authorization: `Bearer ${token}`,
+					  accept: '*/*'
+					}
+				  })
+					if ((response.status === 200)||(response.status===204)) {
+						console.log("Projet supprimé");
+						console.log(icon.id)
+						workslist.splice(indexDeletedWork(icon.id));
+						localStorage.setItem('workslist', JSON.stringify(workslist));
+						modalgallery();
+						filter('tous');
+					}
+					else if (response.status === 401) {
+						console.log("vous n'etes pas autorisé a ajouter un projet");
+					}
+					else if (response.status === 500) {
+						console.log("erreur inconue");
+					}  
+			}
+			catch (error) {
+				console.log("Voici l'erreur :", error);
+			}
+		})
+	};
 }
-
+function modalgallery(){
+  document.getElementById("gallerymodal").innerHTML=''
+  for(let jsonworks of workslist){
+	createWorkModal(jsonworks.id,jsonworks.imageUrl,jsonworks.title)
+  }
+  addiconListener()
+}
+function indexDeletedWork(idwork){
+	let i=0;
+	for(works of workslist){
+		if(works.id==idwork){
+			return i;
+		}
+		else{
+			i++;
+		}
+	}
+  }
 function verifFormCompleted() {
 	if (title.value !== "" && category.value !== "" && projectImg.value !== "") {
 		submitButton.style.backgroundColor="#1D6154";
@@ -120,41 +169,22 @@ else{
 	displayfilter()
 }
 modalgallery()
+
 for(jsoncategory of categorylist){
 	var opt = document.createElement('option');
 	opt.value=jsoncategory.id;
 	opt.innerHTML = jsoncategory.name;
 	category.appendChild(opt);
 }
-for(icon of delete_icon){
-	icon.addEventListener("click",async event=>{
-		event.preventDefault()
-		var formData=new FormData()
-		formData.append("id",icon.id)
-		const response=await fetch("http://localhost:5678/api/works/"+icon.id,{
-			method:"DELETE",
-			headers:{
-    			Authorization: `Bearer ${token}`,
-    			"content-Type":"application/json"
-    		},
-		})
-		const responseData = await response.json();
-        console.log(responseData);
-		filter("tous")
-	})
-	
-};
-
-
 
 return_icon.addEventListener("click",function(){
-  modal_add.style.display="none"
+  	modal_add.style.display="none"
 	modal.style.display="flex"
 	modalform.reset()
 	verifyFileAdded()
 },false)
 edit_button.addEventListener("click",function(){
-  containermodal.style.display="flex"
+  	containermodal.style.display="flex"
 	modal.style.display="flex"
 },false)
 addproject.addEventListener("click",function(){
@@ -164,7 +194,7 @@ addproject.addEventListener("click",function(){
 	verifyFileAdded()
 },false)
 for(element of icon_close){
-  element.addEventListener('click', () =>{
+  	element.addEventListener('click', () =>{
     containermodal.style.display="none"
     modal_add.style.display="none"
     modal.style.display="none"
@@ -192,11 +222,26 @@ modalform.addEventListener('submit', async event => {
             },
             body:formData
         });
-		console.log(JSON.stringify(response))
-        const responseData = await response.json();
-        console.log(responseData);
-        modalgallery();
-        filter("tous");
+		if (response.status === 201) {
+			const data=await response.json();
+			const newwork= await JSON.stringify(data);
+            console.log(response);
+			workslist.push(JSON.parse(newwork))
+			localStorage.setItem('workslist',workslist)
+			modalgallery()
+			filter("tous")
+			addiconListener()
+			verifyFileAdded();
+		}
+		else if (response.status === 400) {
+            console.log("la requete json n'est pas bonne");
+		}
+		else if (response.status === 401) {
+            console.log("vous n'etes pas autorisé a ajouter un projet");
+		}
+		else if (response.status === 500) {
+            console.log("erreur inconue");
+		}
     } 
 	catch (error) {
         console.log("Voici l'erreur :", error);
