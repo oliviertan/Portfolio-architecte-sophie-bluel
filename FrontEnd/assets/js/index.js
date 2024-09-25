@@ -9,7 +9,7 @@ fetch("http://localhost:5678/api/works")
             localStorage.setItem('workslist', JSON.stringify(json));
         })
 const categorylist=JSON.parse(localStorage.getItem('categorylist'));
-const workslist=JSON.parse(localStorage.getItem('workslist'));
+let workslist=JSON.parse(localStorage.getItem('workslist'));
 var stockage;
 var delete_icon = document.getElementsByClassName("fa-trash-can");
 var lastid=localStorage.getItem('lastid');
@@ -224,13 +224,28 @@ modalform.addEventListener('submit', async event => {
         });
 		if (response.status === 201) {
 			const data=await response.json();
-			const newwork= await JSON.stringify(data);
+			const jsondata= JSON.stringify(data);
+			var newwork=
+				{
+				  "id": jsondata.id,
+				  "title": title.value,
+				  "imageUrl":preview.src,
+				  "categoryId":category.value,
+				  "userId": 1,
+				  "category": {
+					"id": category.value,
+					"name": category.innerHTML
+				  }
+				}
+
             console.log(response);
-			workslist.push(JSON.parse(newwork))
-			localStorage.setItem('workslist',workslist)
-			modalgallery()
-			filter("tous")
-			addiconListener()
+			workslist.push( newwork)
+			console.log(workslist)
+			localStorage.setItem('workslist',JSON.stringify(workslist))
+			workslist=JSON.parse(localStorage.getItem('workslist'))
+			createWorkGallery(newwork.id,newwork.imageUrl,newwork.title);
+			createWorkModal(newwork.id,newwork.imageUrl,newwork.title);
+			addiconListener();
 			verifyFileAdded();
 		}
 		else if (response.status === 400) {
