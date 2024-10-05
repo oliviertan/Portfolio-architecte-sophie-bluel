@@ -13,7 +13,7 @@ let workslist=JSON.parse(localStorage.getItem('workslist'));
 var stockage;
 var delete_icon = document.getElementsByClassName("fa-trash-can");
 var lastid=localStorage.getItem('lastid');
-const loged = window.sessionStorage.loged;
+const logged = window.sessionStorage.logged;
 const login=document.getElementById("login")
 const logout = document.getElementById("logout");
 let title=document.getElementById("title");
@@ -55,6 +55,11 @@ function createWorkModal(jsonId,jsonUrl,jsonTitle){
 	<span class="icon_delete"><i id=${jsonId} class=" fa-solid fa-trash-can"></i></span>
    </div>`;
 }
+async function displayError(errorMessage){
+	document.getElementById("error-message").classList.add("display-error");
+    document.getElementById("error-message").classList.remove("hide-error");
+    document.getElementById("error-message").innerHTML=errorMessage;
+}
 function filter(categoryid){
 	document.getElementById("gallery").innerHTML = '';
 	if(categoryid!="tous"){
@@ -91,14 +96,14 @@ function addiconListener(){
 						filter('tous');
 					}
 					else if (response.status === 401) {
-						console.log("vous n'etes pas autorisé a ajouter un projet");
+						displayError("vous n'etes pas autorisé a ajouter un projet");
 					}
 					else if (response.status === 500) {
-						console.log("erreur inconue");
+						displayError("erreur inconue");
 					}  
 			}
 			catch (error) {
-				console.log("Voici l'erreur :", error);
+				displayError("Voici l'erreur :"+error);
 			}
 		})
 	};
@@ -152,7 +157,7 @@ function verifyFileAdded(){
 	}
 }
 
-if (loged == "true") {
+if (logged=="true") {
 		logout.style.display="block"
 		login.style.display="none"
 		banner.style.display="flex"
@@ -160,7 +165,7 @@ if (loged == "true") {
 		header.style.margin="0px"
     	token= localStorage.getItem("token")
 		logout.addEventListener("click", () => {
-			window.sessionStorage.loged = false;
+			window.sessionStorage.logged = false;
 			window.location.href = "./index.html";
 		});
 		edit_button.style.display="flex"
@@ -247,19 +252,22 @@ modalform.addEventListener('submit', async event => {
 			createWorkModal(newwork.id,newwork.imageUrl,newwork.title);
 			addiconListener();
 			verifyFileAdded();
+			document.getElementById("error-message").classList.add('hide-error');
+			document.getElementById("error-message").classList.remove('display-error');
+
 		}
 		else if (response.status === 400) {
-            console.log("la requete json n'est pas bonne");
+            displayError("la requete json n'est pas bonne");
 		}
 		else if (response.status === 401) {
-            console.log("vous n'etes pas autorisé a ajouter un projet");
+            displayError("vous n'etes pas autorisé a ajouter un projet");
 		}
 		else if (response.status === 500) {
-            console.log("erreur inconue");
+            displayError("erreur inconue");
 		}
     } 
 	catch (error) {
-        console.log("Voici l'erreur :", error);
+        displayError("Voici l'erreur :", error);
     }
 });
 filter("tous")

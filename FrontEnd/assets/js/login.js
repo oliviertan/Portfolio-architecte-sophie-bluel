@@ -1,6 +1,4 @@
-
 let data;
-let loginData;
 let loginform=document.querySelector(".loginform");
 let mail=document.getElementById("email");
 let password=document.getElementById("password");
@@ -23,14 +21,20 @@ loginform.addEventListener('submit',async event =>{
         if (data.token) {
             localStorage.setItem('token',data.token);
             localStorage.setItem('userId',data.userId)
-            window.sessionStorage.loged = true;
+            window.sessionStorage.logged = true;
             window.location.href = "../../../index.html";
         } 
         else {
-        console.error(message);
+        displayError("email ou mots de passe incorrect ");
         }
 	})
     .catch(error => {
-    console.error('Une erreur s\'est produite lors de la requête POST', error);
+    displayError('Une erreur s\'est produite lors de la requête POST'+error);
     });
 });
+
+async function displayError(errorMessage){
+	document.getElementById("error-message").classList.add("display-error");
+    document.getElementById("error-message").classList.remove("hide-error");
+    document.getElementById("error-message").innerHTML=errorMessage;
+}

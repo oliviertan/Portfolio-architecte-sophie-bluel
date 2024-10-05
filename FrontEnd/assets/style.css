@@ -435,3 +435,19 @@ footer nav ul {
 #addproject{
 	align-self: center;
 }
+.hide-error{
+	display: none;
+}
+.display-error{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width:fit-content;
+	min-width: 120px;
+	height: 50px;
+	position: absolute;
+	top: 5px;
+	background-color: rgb(243, 121, 121);
+	color: rgb(77, 73, 73);
+	left: 40%;
+}

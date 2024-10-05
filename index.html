@@ -15,6 +15,7 @@
 </head>
 <body>
 <header>
+	<p id="error-message" class="hide-error"></p>
 	<div id="banner-edit"><i class="fa-regular fa-pen-to-square"></i><p>Mode édition</p></div>
 	<div id="menu">
 		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
@@ -63,14 +64,14 @@
 					<div class="containerFile">
 				  		<span class="remove"><i class="fa-5x fa-regular fa-image"></i></span>
 				  		<label class="remove" for="file">+Ajouter photo</label>
-				  		<input type="file" id="file" accept="image/jpeg, image/png"  name="image">
+				  		<input type="file" id="file" accept="image/jpeg, image/png"  name="image" required>
 						<img id="preview" src="#" alt="Aperçut de l'image">
 						<p class="remove">jpg,png: 4 mo max</p>
 					</div>
 					<label for="title">Titre</label>
-					<input type="text" id="title" name="title">
+					<input type="text" id="title" name="title" required>
 					<label for="category">Catégorie</label>
-					<select name="category" id="category"></select>
+					<select name="category" id="category" required></select>
 					<button id="modalsubmit" type="submit" class="button" disabled>Valider</button>
 			  	</form>
 			</div>
